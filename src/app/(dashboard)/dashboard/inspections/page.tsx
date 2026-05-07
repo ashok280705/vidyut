@@ -15,10 +15,12 @@ export default function InspectionsPage() {
 
   const filtered = useMemo(() => {
     return inspections.filter(ins => {
-      if (search && !ins.consumer_name.toLowerCase().includes(search.toLowerCase()) && !ins.meter_number.includes(search)) return false;
+      const nameMatch = ins.consumer_name?.toLowerCase().includes(search.toLowerCase()) ?? false;
+      const meterMatch = ins.meter_number?.includes(search) ?? false;
+      if (search && !nameMatch && !meterMatch) return false;
       if (statusFilter !== 'all' && ins.status !== statusFilter) return false;
       return true;
-    }).sort((a, b) => a.priority - b.priority);
+    }).sort((a, b) => (a.priority ?? 0) - (b.priority ?? 0));
   }, [inspections, search, statusFilter]);
 
   const statusCounts = {
@@ -90,8 +92,8 @@ export default function InspectionsPage() {
             <div className="text-right flex-shrink-0">
               <p className="text-xs text-muted-foreground">Confidence</p>
               <p className={cn('text-lg font-bold tabular-nums',
-                ins.confidence_score > 0.7 ? 'text-red-400' : ins.confidence_score > 0.4 ? 'text-amber-400' : 'text-emerald-400'
-              )}>{(ins.confidence_score * 100).toFixed(0)}%</p>
+                (ins.confidence_score ?? 0) > 0.7 ? 'text-red-400' : (ins.confidence_score ?? 0) > 0.4 ? 'text-amber-400' : 'text-emerald-400'
+              )}>{((ins.confidence_score ?? 0) * 100).toFixed(0)}%</p>
             </div>
 
             {/* Assigned Engineer */}
@@ -130,10 +132,10 @@ export default function InspectionsPage() {
               <button onClick={() => setSelected(null)} className="p-1 hover:bg-white/[0.04] rounded">✕</button>
             </div>
             <div className="space-y-3 text-sm">
-              <div className="flex justify-between"><span className="text-muted-foreground">Consumer</span><span className="font-medium">{selected.consumer_name}</span></div>
-              <div className="flex justify-between"><span className="text-muted-foreground">Meter</span><span>{selected.meter_number}</span></div>
-              <div className="flex justify-between"><span className="text-muted-foreground">Locality</span><span>{selected.locality}</span></div>
-              <div className="flex justify-between"><span className="text-muted-foreground">Confidence</span><span className="font-bold text-primary">{(selected.confidence_score * 100).toFixed(1)}%</span></div>
+              <div className="flex justify-between"><span className="text-muted-foreground">Consumer</span><span className="font-medium">{selected.consumer_name ?? 'Unknown'}</span></div>
+              <div className="flex justify-between"><span className="text-muted-foreground">Meter</span><span>{selected.meter_number ?? 'N/A'}</span></div>
+              <div className="flex justify-between"><span className="text-muted-foreground">Locality</span><span>{selected.locality ?? 'N/A'}</span></div>
+              <div className="flex justify-between"><span className="text-muted-foreground">Confidence</span><span className="font-bold text-primary">{((selected.confidence_score ?? 0) * 100).toFixed(1)}%</span></div>
               <div className="flex justify-between"><span className="text-muted-foreground">Status</span><span className="capitalize">{selected.status}</span></div>
               {selected.assigned_engineer_name && <div className="flex justify-between"><span className="text-muted-foreground">Engineer</span><span>{selected.assigned_engineer_name}</span></div>}
               {selected.outcome && <div className="flex justify-between"><span className="text-muted-foreground">Outcome</span><span>{INSPECTION_OUTCOMES[selected.outcome]?.label}</span></div>}

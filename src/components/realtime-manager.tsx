@@ -62,7 +62,7 @@ export function RealtimeManager() {
     const channels = tables.map(table =>
       client
         .channel(`rt:${table}`)
-        .on('postgres_changes', { event: '*', schema: 'public', table }, (payload) => {
+        .on('postgres_changes', { event: '*', schema: 'public', table }, (payload: any) => {
           handleRealtimeEvent(table, payload.eventType, payload.new as Record<string, unknown>);
         })
         .subscribe()

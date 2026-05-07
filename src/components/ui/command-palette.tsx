@@ -26,10 +26,10 @@ export function CommandPalette() {
   // Build command items
   const items: CommandItem[] = useMemo(() => {
     const navItems: CommandItem[] = NAV_ITEMS.map(nav => ({
-      id: nav.href,
+      id: nav.path,
       label: nav.label,
       description: `Navigate to ${nav.label}`,
-      action: () => { router.push(nav.href); setCommandPaletteOpen(false); },
+      action: () => { router.push(nav.path); setCommandPaletteOpen(false); },
       category: 'Navigation',
     }));
 

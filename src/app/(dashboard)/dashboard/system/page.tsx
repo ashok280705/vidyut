@@ -64,17 +64,17 @@ export default function SystemPage() {
               <span className={cn('h-2 w-2 rounded-full', s.status === 'operational' ? 'bg-emerald-500 shadow-[0_0_6px_rgba(34,197,94,0.5)]' : 'bg-amber-500')} />
             </div>
             <p className="text-xs font-medium">{s.name}</p>
-            <p className="text-[10px] text-muted-foreground mt-0.5">{s.latency.toFixed(0)}ms · {s.status}</p>
+            <p className="text-[10px] text-muted-foreground mt-0.5">{(s.latency ?? 0).toFixed(0)}ms · {s.status}</p>
           </div>
         ))}
       </div>
 
       {/* Metrics */}
       <div className="grid md:grid-cols-4 gap-4">
-        <div className="stat-card"><p className="text-[10px] text-muted-foreground uppercase tracking-wider">API Latency</p><p className="text-2xl font-bold mt-1">{health.api_latency_ms.toFixed(0)}<span className="text-sm text-muted-foreground ml-1">ms</span></p></div>
-        <div className="stat-card"><p className="text-[10px] text-muted-foreground uppercase tracking-wider">DB Connections</p><p className="text-2xl font-bold mt-1">{health.db_connections}</p></div>
-        <div className="stat-card"><p className="text-[10px] text-muted-foreground uppercase tracking-wider">Ingestion Rate</p><p className="text-2xl font-bold text-primary mt-1">{health.ingestion_rate.toFixed(0)}<span className="text-sm text-muted-foreground ml-1">/min</span></p></div>
-        <div className="stat-card"><p className="text-[10px] text-muted-foreground uppercase tracking-wider">Uptime</p><p className="text-2xl font-bold text-emerald-400 mt-1">{health.uptime_hours.toFixed(0)}<span className="text-sm text-muted-foreground ml-1">hrs</span></p></div>
+        <div className="stat-card"><p className="text-[10px] text-muted-foreground uppercase tracking-wider">API Latency</p><p className="text-2xl font-bold mt-1">{(health.api_latency_ms ?? 0).toFixed(0)}<span className="text-sm text-muted-foreground ml-1">ms</span></p></div>
+        <div className="stat-card"><p className="text-[10px] text-muted-foreground uppercase tracking-wider">DB Connections</p><p className="text-2xl font-bold mt-1">{health.db_connections ?? 0}</p></div>
+        <div className="stat-card"><p className="text-[10px] text-muted-foreground uppercase tracking-wider">Ingestion Rate</p><p className="text-2xl font-bold text-primary mt-1">{(health.ingestion_rate ?? 0).toFixed(0)}<span className="text-sm text-muted-foreground ml-1">/min</span></p></div>
+        <div className="stat-card"><p className="text-[10px] text-muted-foreground uppercase tracking-wider">Uptime</p><p className="text-2xl font-bold text-emerald-400 mt-1">{(health.uptime_hours ?? 0).toFixed(0)}<span className="text-sm text-muted-foreground ml-1">hrs</span></p></div>
       </div>
 
       {/* Latency Chart */}

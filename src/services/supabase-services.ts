@@ -85,7 +85,34 @@ export async function fetchActivity(limit?: number): Promise<ActivityItem[]> {
 }
 
 export async function fetchWeather(): Promise<WeatherData> {
-  return mock.generateWeather();
+  const apiKey = process.env.NEXT_PUBLIC_OPENWEATHER_API_KEY || process.env.OPENWEATHER_API_KEY;
+  if (!apiKey) {
+    console.warn('[VIDYUT] OpenWeather API key missing — using mock data');
+    return mock.generateWeather();
+  }
+
+  try {
+    const response = await fetch(
+      `https://api.openweathermap.org/data/2.5/weather?q=Bangalore&units=metric&appid=${apiKey}`
+    );
+    if (!response.ok) throw new Error('Weather API request failed');
+    
+    const data = await response.json();
+    return {
+      timestamp: new Date().toISOString(),
+      temperature_c: data.main.temp,
+      temperature: data.main.temp,
+      humidity_percent: data.main.humidity,
+      humidity: data.main.humidity,
+      cloud_cover_percent: data.clouds.all,
+      wind_speed_kmh: data.wind.speed * 3.6, // Convert m/s to km/h
+      condition: data.weather[0].main,
+      risk_multiplier: data.main.temp > 35 ? 1.2 : 1.0
+    };
+  } catch (err) {
+    console.error('[VIDYUT] Weather fetch error:', err);
+    return mock.generateWeather();
+  }
 }
 
 export async function fetchNotifications(): Promise<ActivityItem[]> {
@@ -211,13 +238,13 @@ export async function fetchModelMetrics(): Promise<ModelMetrics[]> {
   return mock.generateModelMetrics();
 }
 
-export async function fetchForecasts(): Promise<Forecast[]> {
+export async function fetchForecasts(limit?: number): Promise<Forecast[]> {
   const sb = getSupabase();
-  if (!sb) return mock.generateForecasts();
+  if (!sb) return mock.generateForecasts(limit);
   try {
-    const { data } = await sb.from('forecasts').select('*').limit(48);
-    return (data && data.length > 0 ? data : mock.generateForecasts()) as Forecast[];
-  } catch { return mock.generateForecasts(); }
+    const { data } = await sb.from('forecasts').select('*').limit(limit || 48);
+    return (data && data.length > 0 ? data : mock.generateForecasts(limit)) as Forecast[];
+  } catch { return mock.generateForecasts(limit); }
 }
 
 export async function fetchGridStress(): Promise<GridStress[]> {

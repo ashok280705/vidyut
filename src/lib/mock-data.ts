@@ -133,6 +133,7 @@ export function generateInspections(count = 20): Inspection[] {
       outcome: s === 'resolved' ? pick(outcomes) : undefined,
       notes: s === 'resolved' ? 'Inspection completed. Evidence documented.' : undefined,
       created_at: new Date(Date.now() - randInt(0, 5 * 86400000)).toISOString(),
+      updated_at: new Date().toISOString(),
     };
   });
 }
@@ -188,6 +189,7 @@ export function generateReadings(meterId: string, days = 7): MeterReading[] {
 
 export function generateSystemHealth(): SystemHealth {
   return {
+    status: 'nominal',
     api_latency_ms: rand(12, 85), db_connections: randInt(15, 45),
     db_health: 'healthy', ingestion_rate: rand(100, 500),
     model_health: 'healthy', realtime_sync: 'connected',
