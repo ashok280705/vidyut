@@ -123,6 +123,30 @@ export default function LoginPage() {
             <Power className="h-4 w-4" /> Launch Demo Mode
           </button>
 
+          {/* Sample Credentials */}
+          <div className="mt-8 space-y-3">
+            <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold text-center">Sample Credentials</p>
+            <div className="grid grid-cols-2 gap-2">
+              {[
+                { role: 'Admin', email: 'anuj@gmail.com', pass: 'Wtmg2135', icon: 'ShieldCheck' },
+                { role: 'Field Eng', email: 'sho@gmail.com', pass: 'wtmg2135', icon: 'HardHat' },
+                { role: 'Supervisor', email: 'rahul@gmail.com', pass: 'wtmg2135', icon: 'ClipboardCheck' },
+                { role: 'Analyst', email: 'as@gmail.com', pass: 'Wtmg2135', icon: 'LineChart' }
+              ].map((c) => (
+                <button 
+                  key={c.role}
+                  type="button"
+                  onClick={() => { setEmail(c.email); setPassword(c.pass); }}
+                  className="p-2 rounded-xl bg-white/[0.02] border border-white/[0.04] hover:bg-white/[0.05] hover:border-primary/20 transition-all text-left group"
+                >
+                  <p className="text-[10px] font-bold text-primary/80 group-hover:text-primary transition-colors">{c.role}</p>
+                  <p className="text-[9px] text-muted-foreground truncate">{c.email}</p>
+                  <p className="text-[9px] text-muted-foreground/60 font-mono mt-0.5">{c.pass}</p>
+                </button>
+              ))}
+            </div>
+          </div>
+
           <p className="text-center text-xs text-muted-foreground mt-6">
             Don&apos;t have an account? <a href="/signup" className="text-primary hover:underline">Sign up</a>
           </p>
